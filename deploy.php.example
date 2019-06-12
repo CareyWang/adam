@@ -26,12 +26,30 @@ add('shared_files', ['.env']);
 add('shared_dirs', ['storage']);
 
 // Writable dirs by web server
-add('writable_dirs', ['storage']);
+add('writable_dirs', []);
 
 // Tasks
 task('build', function () {
     run('cd {{release_path}} && build');
 });
+
+task('deploy', [
+    'deploy:info',
+    'deploy:prepare',
+    'deploy:lock',
+    'deploy:release',
+    'deploy:update_code',
+    'deploy:shared',
+    'deploy:vendors',
+    // 'deploy:writable',
+    'artisan:storage:link',
+    'artisan:view:clear',
+    // 'artisan:config:cache',
+    'artisan:optimize',
+    'deploy:symlink',
+    'deploy:unlock',
+    'cleanup',
+]);
 
 // Migrate database before symlink new release.
 before('deploy:symlink', 'artisan:migrate');
