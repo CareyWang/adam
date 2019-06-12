@@ -22,8 +22,8 @@ host('xxx.xxx.xxx.xxx')
 set('git_tty', true);
 
 // Shared files/dirs between deploys
-add('shared_files', ['storage']);
-add('shared_dirs', ['.env']);
+add('shared_files', ['.env']);
+add('shared_dirs', ['storage']);
 
 // Writable dirs by web server
 add('writable_dirs', ['storage']);
