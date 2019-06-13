@@ -11,27 +11,14 @@ set('repository', 'git@github.com:CareyWang/adam.git');
 
 // 这里填写目标服务器的 IP 或者域名
 host('xxx.xxx.xxx.xxx')
-    ->stage('production')
+    // ->stage('production')
     ->user('deployer') // 这里填写 deployer
-	  // 并指定公钥的位置
+    ->port('22')
     ->identityFile('~/.ssh/deployerkey')
-    // 指定项目部署到服务器上的哪个目录
     ->set('deploy_path', '/var/www/http/adam');
 
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', true);
-
-// Shared files/dirs between deploys
-add('shared_files', ['.env']);
-add('shared_dirs', ['storage']);
-
-// Writable dirs by web server
-add('writable_dirs', []);
-
-// Tasks
-task('build', function () {
-    run('cd {{release_path}} && build');
-});
 
 task('deploy', [
     'deploy:info',
@@ -41,11 +28,15 @@ task('deploy', [
     'deploy:update_code',
     'deploy:shared',
     'deploy:vendors',
-    // 'deploy:writable',
     'artisan:storage:link',
     'artisan:view:clear',
-    // 'artisan:config:cache',
+
+    'artisan:queue:restart',
+
+    'artisan:cache:clear',
+    'artisan:config:cache',
     'artisan:optimize',
+
     'deploy:symlink',
     'deploy:unlock',
     'cleanup',
@@ -53,9 +44,6 @@ task('deploy', [
 
 // Migrate database before symlink new release.
 before('deploy:symlink', 'artisan:migrate');
-
-
-after('artisan:config:cache', 'artisan:route:cache');
 
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
