@@ -8,16 +8,29 @@ use Illuminate\Support\Facades\File;
 
 class YoYuSurgeConfController extends Controller
 {
-    public function transfer($url)
+    const CONF_PATH = '/resources/files/YoYu.conf';
+    const ADVANCED_CONF_PATH = '/resources/files/YoYu-Advance.conf';
+
+    public function generate($url)
+    {
+        return response($this->transfer($url, self::CONF_PATH), 200)->header('Content-Type', 'text/html; charset=UTF-8');
+    }
+
+    public function generateAdvanced($url)
+    {
+        return response($this->transfer($url, self::ADVANCED_CONF_PATH), 200)->header('Content-Type', 'text/html; charset=UTF-8');
+    }
+
+    private function transfer($url, $confPath)
     {
         $eUrl = urlencode($url);
 
-        $conf = File::get (base_path() . '/resources/files/YoYu.conf', $lock = false);
+        $conf = File::get (base_path() . $confPath, $lock = false);
         $conf = mb_convert_encoding($conf, 'UTF-8');
 
         $conf = str_replace(':url', $url, $conf);
         $conf = str_replace(':eUrl', $eUrl, $conf);
 
-        return response($conf, 200)->header('Content-Type', 'text/html; charset=UTF-8');
+        return $conf;
     }
 }

@@ -25,4 +25,5 @@ Route::prefix('encode', function () {
     Route::get('base64', 'Base64EncoderController@decode')->name('base64encoder.decode');
 });
 
-Route::get('/yoyu/{url}', 'YoYuSurgeConfController@transfer')->where('url', '.*$');
+Route::get('/yoyu/advance/{url}', 'YoYuSurgeConfController@generateAdvanced')->where('url', '.*$');
+Route::get('/yoyu/{url}', 'YoYuSurgeConfController@generate')->where('url', '.*$');
