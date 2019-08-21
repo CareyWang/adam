@@ -13,12 +13,18 @@ class YoYuSurgeConfController extends Controller
 
     public function generate($url)
     {
-        return response($this->transfer($url, self::CONF_PATH), 200)->header('Content-Type', 'text/html; charset=UTF-8');
+        return response($this->transfer($url, self::CONF_PATH), 200)->withHeaders([
+            'Content-Type' => 'text/html; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=604800',
+        ]);
     }
 
     public function generateAdvanced($url)
     {
-        return response($this->transfer($url, self::ADVANCED_CONF_PATH), 200)->header('Content-Type', 'text/html; charset=UTF-8');
+        return response($this->transfer($url, self::ADVANCED_CONF_PATH), 200)->withHeaders([
+            'Content-Type' => 'text/html; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=604800',
+        ]);
     }
 
     private function transfer($url, $confPath)
